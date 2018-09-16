@@ -1,7 +1,6 @@
 import React from "react";
 import axios from "axios";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import jwtDecode from "jwt-decode";
 
 import Home from "./Home";
 import Beers from "./Beers";
@@ -15,16 +14,13 @@ class Application extends React.Component {
     super(props);
 
     this.state = {
-      user: this._setUser(true)
+      beers: []
     };
 
-    this._setUser = this._setUser.bind(this);
-    this._resetUser = this._resetUser.bind(this);
+    this._getAllBeers = this._getAllBeers.bind(this);
   }
 
-  componentDidMount() {
-    this._setUser();
-  }
+  componentDidMount() {}
 
   render() {
     return (
@@ -33,7 +29,16 @@ class Application extends React.Component {
           <Navigation />
           <Switch>
             <Route exact path="/" render={() => <Home />} />
-            <Route exact path="/beers" render={() => <Beers />} />
+            <Route
+              exact
+              path="/beers"
+              render={() => (
+                <Beers
+                  beers={this.state.beers}
+                  getAllBeers={this._getAllBeers}
+                />
+              )}
+            />
             <Route exact path="/random-beer" render={() => <RandomBeer />} />
             <Route exact path="/new-beer" render={() => <NewBeer />} />
             <Route component={NotFound} />
@@ -43,22 +48,21 @@ class Application extends React.Component {
     );
   }
 
-  _resetUser() {
-    this.setState({
-      user: null
-    });
-  }
-
-  _setUser(init) {
-    const token = localStorage.getItem("identity");
-    if (token) {
-      const decoded = jwtDecode(token);
-      delete decoded.iat;
-      if (init) return decoded;
-      this.setState({ user: decoded });
-    } else {
-      return null;
-    }
+  _getAllBeers() {
+    console.log("get all the beers");
+    let beers = [];
+    axios
+      .get("https://ironbeer-api.herokuapp.com/beers/all")
+      .then(res => {
+        beers = res.data.map(beer => {
+          return beer;
+        });
+        console.log(beers);
+        this.setState({ beers });
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 
