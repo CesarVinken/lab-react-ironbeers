@@ -49,7 +49,6 @@ class Application extends React.Component {
   }
 
   _getAllBeers() {
-    console.log("get all the beers");
     let beers = [];
     axios
       .get("https://ironbeer-api.herokuapp.com/beers/all")
@@ -57,7 +56,6 @@ class Application extends React.Component {
         beers = res.data.map(beer => {
           return beer;
         });
-        console.log(beers);
         this.setState({ beers });
       })
       .catch(err => {

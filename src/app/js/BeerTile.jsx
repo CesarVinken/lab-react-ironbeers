@@ -1,16 +1,17 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const BeerTile = props => {
-  console.log(props);
   return (
     <div className="tile">
       <img src={props.image} alt="beer" />
       <div className="beer-Info">
-        <h3>{props.name}</h3>
+        <Link to={`/beers/${props.id}`}>
+          <h3>{props.name}</h3>
+        </Link>
         <p>{props.description}</p>
         <p>Created by {props.createdBy}</p>
       </div>
-      <hr />
     </div>
   );
 };
